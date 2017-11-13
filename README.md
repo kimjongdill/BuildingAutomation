@@ -4,7 +4,7 @@ Arduino ADT to store wifi mesh node messages and access data
 Works with blackedder's <a href = "https://gitlab.com/BlackEdder/painlessMesh ">painlessMesh</a> to track the names and statuses of nodes on a wifi mesh network. 
 
 <ul>The ADT is a singly linked list of data nodes. The nodes store:
- <li>int device_id = The unique id of the sending ESP8266 Module</li>
+  <li>int device_id = The unique id of the sending ESP8266 Module</li>
   <li>int device_type = The type of device sending the message. Console, Controller, Doorbell, Alarm.</li>
   <li>time_t time = The timestamp of the last message</li>
   <li>String device_name = A descriptive name of the device eg. "George's Apartment"</li>
