@@ -69,9 +69,9 @@ void resetCurAlarm(){
 int getAlarmBool(){
   int alarmThreshold = 335;
   int analogSensor = analogRead(A0);
-  Serial.print("Pin A0: ");
-  Serial.println(analogSensor);
-  Serial.println(currentlyAlarming);
+  //Serial.print("Pin A0: ");
+  //Serial.println(analogSensor);
+  //Serial.println(currentlyAlarming);
 
   if(analogSensor > alarmThreshold)
     currentlyAlarming = true;
