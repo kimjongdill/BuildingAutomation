@@ -12,6 +12,9 @@
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
+#define   BTN             16
+
+bool currentlyAlarming = false;
 
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
@@ -38,6 +41,7 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 
 void setup() {
   Serial.begin(115200);
+  attachInterrupt(BTN, resetCurAlarm, RISING);
 
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
   mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
@@ -56,13 +60,20 @@ void loop() {
   mesh.update();
 }
 
-int getAlarmBool(){
-  int alarmThreshold = 387;
-  int analogSensor = analogRead(A0);
-  Serial.print("Pin A0: ");
-  Serial.println(analogSensor);
+void resetCurAlarm(){
+  currentlyAlarming = false;
+}
 
-  return (analogSensor > alarmThreshold);
+int getAlarmBool(){
+  int alarmThreshold = 335;
+  int analogSensor = analogRead(A0);
+  //Serial.print("Pin A0: ");
+  //Serial.println(analogSensor);
+
+  if(analogSensor > alarmThreshold)
+    currentlyAlarming = true;
+
+  return (analogSensor > alarmThreshold) || currentlyAlarming;
 }
 
 void sendMessage() {
