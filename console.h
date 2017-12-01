@@ -11,3 +11,4 @@ extern int console_update(CONSOLE* c, String msg);
 extern void console_print(CONSOLE* c);
 extern void console_get_stats(CONSOLE* c, int* minimum, int* avg);
 extern void console_get_info(CONSOLE* c, int* index, char name[100], int* temp);
+extern void console_get_info_id(CONSOLE* c, int* index, char name[100], uint32_t* id);

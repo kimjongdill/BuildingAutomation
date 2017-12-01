@@ -141,6 +141,23 @@ extern void console_get_info(CONSOLE* c, int* index, char name[100], int* temp){
 	return;
 }
 
+extern void console_get_info_id(CONSOLE* c, int* index, char name[100], uint32_t* id){
+	
+	if(c == NULL || c->numConsoles == 0){
+		return;
+	}
+	
+	if(*index >= c->numConsoles || *index < 0){
+		*index = -1;
+		return;
+	}
+	
+	strcpy(name, c->presentConsoles[*index]->device_name);
+	*id = c->presentConsoles[*index]->device_id;
+	return;
+}
+
+
 // Read the JSON message and determine whether to update the console list
 extern int console_update(CONSOLE* c, String msg){
 	
