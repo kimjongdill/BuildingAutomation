@@ -12,9 +12,9 @@
 #define   MESH_PREFIX     "whateverYouLike"
 #define   MESH_PASSWORD   "somethingSneaky"
 #define   MESH_PORT       5555
-#define   BTN             16
+#define   BTN             5
 
-bool currentlyAlarming = false;
+bool currentlyAlarming;
 
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
@@ -40,6 +40,8 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 }
 
 void setup() {
+  pinMode(BTN, INPUT);
+  currentlyAlarming = false;
   Serial.begin(115200);
   attachInterrupt(BTN, resetCurAlarm, RISING);
 
@@ -69,6 +71,7 @@ int getAlarmBool(){
   int analogSensor = analogRead(A0);
   //Serial.print("Pin A0: ");
   //Serial.println(analogSensor);
+  //Serial.println(currentlyAlarming);
 
   if(analogSensor > alarmThreshold)
     currentlyAlarming = true;

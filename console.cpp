@@ -15,12 +15,14 @@
 #include <list>
 #include <algorithm>
 #include <ArduinoJson.h>
+#include <TimeLib.h>
 
 typedef struct node{
 
 	uint32_t device_id;
 	int device_data;
 	char device_name[100];
+	time_t lastUpdate;
 
 }NODE;
 
@@ -105,9 +107,42 @@ extern void console_print(CONSOLE* c){
 	return;
 }
 
+static void delete_aging(CONSOLE* c){
+	time_t current = now();
+	int prevSize = c->numConsoles;
+	int j = 0;
+	
+	for(int i = 0; i < prevSize; i++){
+		if((current - c->presentConsoles[i]->lastUpdate) > 50){
+			free(c->presentConsoles[i]);
+			c->presentConsoles[i] = NULL;
+			c->numConsoles--;
+		} 
+	
+	}
+	for(int i = 0; i < prevSize; i++){
+		if(c->presentConsoles[i] == NULL){
+			j = i; 
+			while((c->presentConsoles[j] != NULL) && (j < prevSize)){
+				j++;
+			}
+			c->presentConsoles[i] = c->presentConsoles[j];
+			c->presentConsoles[j] = NULL;	
+		}
+	}
+	
+	return;
+
+}
+
 extern void console_get_stats(CONSOLE* c, int* minimum, int* avg){
-	if(c->numConsoles == 0)
+	delete_aging(c);
+	
+	if(c->numConsoles == 0){
+		*minimum = 0;
+		*avg = 0;
 		return;
+	}
 	
 	int sum = 0;
 
@@ -128,6 +163,9 @@ extern void console_get_stats(CONSOLE* c, int* minimum, int* avg){
 extern void console_get_info(CONSOLE* c, int* index, char name[100], int* temp){
 	
 	if(c == NULL || c->numConsoles == 0){
+		*temp = 0;
+		*index = -1;
+		name = '\0';
 		return;
 	}
 	
@@ -189,6 +227,7 @@ extern int console_update(CONSOLE* c, String msg){
 	n->device_data = (int)myRequest["data"];
 	n->device_id = (uint32_t)myRequest["device_id"];
 	strcpy(n->device_name, myRequest["device_name"]);
+	n->lastUpdate = now();
 	
 	return 1;
 	
